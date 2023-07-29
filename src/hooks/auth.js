@@ -2,6 +2,8 @@
 import { useState } from "react";
 import { toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
+import { useNavigate } from 'react-router-dom';
+import { faL } from "@fortawesome/free-solid-svg-icons";
 
 
 const host = `https://anonymous-social-bt77.onrender.com/api/v1/auth`
@@ -13,6 +15,7 @@ export function useLogin() {
     const [isLoading, setisLoading] = useState(false);
     const [error, setError] = useState(null);
     const [isLogged, setIsLogged] = useState(false);
+    const navigate = useNavigate();
 
 
 
@@ -34,7 +37,8 @@ export function useLogin() {
             if (response.ok) {
                 toast.success('user logged in succesfully')
                 localStorage.setItem('auth', responseData.token)
-                window.location.href = '/'
+                navigate('/');
+
 
             }
             else {
@@ -103,10 +107,12 @@ export function useSignup() {
 
 export function useUserInfo() {
     const [user, setUser] = useState();
+    const [isLoggedin, setisLoggedin] = useState(false);
 
     const userInfo = async (req, res) => {
         try {
             const authToken = localStorage.getItem('auth');
+
             const response = await fetch(`${host}/userinfo`, {
                 method: 'GET',
                 headers: {
@@ -117,11 +123,14 @@ export function useUserInfo() {
             })
             const responseData = await response.json();
             if (response.ok) {
-                console.log(responseData)
+
                 setUser(responseData.user)
+                setisLoggedin(true)
             }
             else {
+                setisLoggedin(false);
                 throw new Error(responseData.error)
+
             }
 
         } catch (error) {
@@ -131,5 +140,5 @@ export function useUserInfo() {
 
     }
 
-    return { userInfo, user }
+    return { userInfo, user, isLoggedin }
 }

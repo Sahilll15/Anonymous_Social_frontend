@@ -75,3 +75,19 @@ export function useAddPost() {
 
     return { isLoading, error, data, addPost };
 }
+
+
+export function useLikeDislike() {
+
+    const LikePost = (postId) => {
+
+        try {
+
+        } catch (error) {
+
+        }
+
+    }
+
+
+}

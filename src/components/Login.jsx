@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useLogin } from "../hooks/auth";
 import {toast,ToastContainer} from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
+import { useNavigate } from "react-router-dom";
 
 
 const Login = () => {
@@ -11,6 +12,7 @@ const Login = () => {
   const [formdata, setFormData] = useState({ username: "", password: "" });
     const [seepasword, setseepassword] = useState(false);
     const { login } = useLogin();
+    const navigate = useNavigate();
    
     const handleviewpassword = () => {
         setseepassword(!seepasword);
@@ -28,7 +30,11 @@ const Login = () => {
 
   const handleSubmit=(e)=>{
     e.preventDefault();
-     login(formdata.username,formdata.password);
+    login(formdata.username,formdata.password).then(()=>{
+      
+        navigate('/')
+
+    });
     
   }
 

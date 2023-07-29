@@ -1,27 +1,35 @@
-import React from 'react'
-import Login from './components/Login'
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
-import Home from './pages/Home'
-import Signup from './components/Signup'
-import { toast, ToastContainer } from 'react-toastify'
+import React from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import PrivateRoutes from './utils/PrivateRoutes';
+import Home from './pages/Home';
+import Login from './components/Login';
+import Signup from './components/Signup';
 
-const App = () => {
+
+
+function App() {
   return (
-    <div>
-
+    <Router>
       <ToastContainer />
 
-      <Router>
+      <div className='  overflow-hidden'>
         <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
+
+          <Route element={<PrivateRoutes />}>
+
+            <Route element={<Home />} path='/' />
+
+
+          </Route>
+          <Route element={<Login />} path='/login' />
+          <Route element={<Signup />} path='/signup' />
 
         </Routes>
-      </Router>
-
-    </div>
-  )
+      </div>
+    </Router>
+  );
 }
 
-export default App
+export default App;

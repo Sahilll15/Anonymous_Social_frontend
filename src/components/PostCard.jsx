@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { FaThumbsUp, FaComment } from 'react-icons/fa';
+import { useLikeDislike } from '../hooks/likes';
 
 const formatDate = (dateString) => {
   const date = new Date(dateString);
@@ -14,6 +15,14 @@ const formatDate = (dateString) => {
 };
 
 const PostCard = ({ post, handleLike, handleComment }) => {
+  const {LikePost}=useLikeDislike();
+  const [liked, setLiked] = useState(false);
+
+  const handleLikeClick = (postId) => {
+    console.log(postId)
+    LikePost(postId)
+  };
+
   return (
     <div className="bg-white p-4 shadow-md rounded-lg">
       <div className="flex items-center">
@@ -27,18 +36,18 @@ const PostCard = ({ post, handleLike, handleComment }) => {
       <p className="text-gray-800 mt-2">{post.content}</p>
       <div className="flex items-center mt-4">
         <button
-          onClick={() => handleLike(post.id)}
-          className="mr-2 text-gray-600 hover:text-blue-500 flex items-center focus:outline-none"
+          onClick={() => handleLikeClick(post._id)}
+          className={`mr-2 text-gray-600 hover:text-blue-500 flex items-center focus:outline-none ${liked ? 'text-blue-500' : ''}`}
         >
           <FaThumbsUp className="mr-1" />
-          {post.likes}
+          {post.likes.length}
         </button>
         <button
           onClick={() => handleComment(post.id)}
           className="mr-2 text-gray-600 hover:text-blue-500 flex items-center focus:outline-none"
         >
           <FaComment className="mr-1" />
-          {/* {post.comments.length} */}
+          {post.comments}
         </button>
       </div>
       <div className="text-blue-600 text-sm mt-2">{formatDate(post.createdAt)}</div>
