@@ -3,7 +3,7 @@ import { RiHome2Line, RiCompass3Line, RiBellLine, RiLogoutCircleLine } from 'rea
 
 const Sidebar = () => {
   return (
-    <div className="bg-gray-800 text-white h-screen w-1/6 p-4">
+    <div className="bg-gray-800 text-white fixed top-0 w-1/6 p-4 h-screen">
       <div className="flex items-center mb-8">
         <div className="h-10 w-10 rounded-full bg-white mr-3"></div>
         <div>

@@ -7,45 +7,39 @@ import { faThumbsUp, faComment } from '@fortawesome/free-solid-svg-icons';
 import PostCard from '../components/PostCard';
 import { useAddPost } from '../hooks/posts';
 
-
 const host = `https://anonymous-social-bt77.onrender.com/api/v1/posts`
 
 const Home = () => {
   const [posts, setPosts] = useState([]);
 
-  const {addPost}=useAddPost();
+  const { addPost } = useAddPost();
 
-    const fetchPosts = async () => {
-    
-        try {
-            const response = await fetch(`${host}/getposts`);
-            const responseData = await response.json();
-            if (response.ok) {
-                setPosts(responseData.posts);
-                console.log(responseData.posts)
-            }
-            else {
-                throw new Error(responseData.message);
-            }
-        }
-        catch (err) {
-            console.log(err.message);
-
-        }
-
+  const fetchPosts = async () => {
+    try {
+      const response = await fetch(`${host}/getposts`);
+      const responseData = await response.json();
+      if (response.ok) {
+        setPosts(responseData.posts);
+        console.log(responseData.posts)
+      } else {
+        throw new Error(responseData.message);
+      }
+    } catch (err) {
+      console.log(err.message);
     }
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        const content = e.target[0].value;
-        console.log(content)
-        addPost(content);
-        fetchPosts();
-    };
+  }
 
-  useEffect(()=>{
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const content = e.target[0].value;
+    console.log(content)
+    addPost(content);
+    await fetchPosts();
+  };
+
+  useEffect(() => {
     fetchPosts();
-
-  },[handleSubmit])
+  }, [])
 
   const handleLike = (postId) => {
     setPosts((prevPosts) =>
@@ -63,17 +57,12 @@ const Home = () => {
     );
   };
 
-  
-
-
-
-
   return (
     <>
-      <div className="flex">
+      <div className="flex flex-col lg:flex-row">
         <Sidebar />
 
-        <div className="container mx-auto px-4 py-8 w-3/4">
+        <div className="container ml-44 lg:w-3/4 mx-auto px-10 py-8 lg:ml-80">
           <h1 className="text-4xl font-bold mb-4">Anonymous Social Website</h1>
 
           {/* Post Input Form */}
@@ -93,12 +82,12 @@ const Home = () => {
             </form>
           </div>
 
-           <div className="space-y-4">
+          <div className="space-y-4 ">
+            {posts.length === 0 ? <h1>Loading..</h1> : null}
             {posts.map((post) => (
-                <PostCard post={post} handleLike={handleLike} handleComment={handleComment} />
-            
+              <PostCard post={post} handleLike={handleLike} handleComment={handleComment} />
             ))}
-          </div> 
+          </div>
         </div>
       </div>
     </>
