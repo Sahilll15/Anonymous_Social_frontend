@@ -22,7 +22,7 @@ const PostCard = ({ post, handleLike, handleComment }) => {
           src={post.author.avatar}
           alt={post.author.name}
         />
-        <p className="ml-4 text-gray-800 font-bold">{post.authorname}</p>
+        <p className="ml-4 text-gray-800 font-bold">{post.author.name}</p>
       </div>
       <p className="text-gray-800 mt-2">{post.content}</p>
       <div className="flex items-center mt-4">

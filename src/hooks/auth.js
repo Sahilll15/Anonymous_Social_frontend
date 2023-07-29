@@ -33,6 +33,8 @@ export function useLogin() {
             const responseData = await response.json();
             if (response.ok) {
                 toast.success('user logged in succesfully')
+                localStorage.setItem('auth', responseData.token)
+                window.location.href = '/'
 
             }
             else {
@@ -96,4 +98,38 @@ export function useSignup() {
 
     return { isLoading, error, isSignedUp, signup };
 
+}
+
+
+export function useUserInfo() {
+    const [user, setUser] = useState();
+
+    const userInfo = async (req, res) => {
+        try {
+            const authToken = localStorage.getItem('auth');
+            const response = await fetch(`${host}/userinfo`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${authToken}`,
+                },
+
+            })
+            const responseData = await response.json();
+            if (response.ok) {
+                console.log(responseData)
+                setUser(responseData.user)
+            }
+            else {
+                throw new Error(responseData.error)
+            }
+
+        } catch (error) {
+            console.log(error)
+        }
+
+
+    }
+
+    return { userInfo, user }
 }

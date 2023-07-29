@@ -31,9 +31,10 @@ const Home = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const content = e.target[0].value;
+    let content = e.target[0].value;
     console.log(content)
     addPost(content);
+    content=' ';
     await fetchPosts();
   };
 
@@ -63,13 +64,12 @@ const Home = () => {
         <Sidebar />
 
         <div className="container ml-44 lg:w-3/4 mx-auto px-10 py-8 lg:ml-80">
-          <h1 className="text-4xl font-bold mb-4">Anonymous Social Website</h1>
 
           {/* Post Input Form */}
           <div className="mb-4">
             <form onSubmit={handleSubmit}>
               <textarea
-                className="w-full border rounded px-3 py-2"
+                className="w-full border rounded px-3 py-4"
                 placeholder="Write your post here..."
                 name='content'
               ></textarea>
