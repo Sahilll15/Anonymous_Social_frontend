@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { RiHome2Line, RiCompass3Line, RiBellLine, RiLogoutCircleLine } from 'react-icons/ri';
-import { NavLink } from 'react-router-dom';
 import { useUserInfo } from '../hooks/auth';
-import SkeletonSidebar from './SkeletonSidebar';
+import SkeletonSidebar from './Skeletons/SkeletonSidebar';
+import { FaUser } from 'react-icons/fa';
+import { NavLink } from 'react-router-dom';
 
 const Sidebar = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -24,7 +25,7 @@ const Sidebar = () => {
   };
 
   if (isLoading) {
-    return <SkeletonSidebar />;
+    return( <SkeletonSidebar />);
   }
 
   if (!user) {
@@ -38,6 +39,7 @@ const Sidebar = () => {
   return (
     <div className="bg-black text-white fixed top-0 w-1/6 p-4 h-screen">
       <div className="flex items-center mb-8">
+      <NavLink to={`/profile/${user._id}`}>
         <div className="h-10 w-10 rounded-full bg-white mr-3">
           <img
             src={user.avatar.url}
@@ -45,6 +47,7 @@ const Sidebar = () => {
             className="h-full w-full object-cover rounded-full"
           />
         </div>
+        </NavLink>
         <div>
           <p className="font-bold text-xl">Anonymous Social</p>
           <p className="text-sm">Welcome, {user.username}!</p>
@@ -52,8 +55,8 @@ const Sidebar = () => {
       </div>
       <ul className="space-y-4">
         <li className="flex items-center space-x-3">
-          <RiHome2Line className="w-6 h-6 fill-current" />
-          <a href="/">Home</a>
+         <FaUser className='w-6 h-6 fill-current' />
+          <NavLink to={`/profile/${user._id}`}>Profile</NavLink>
         </li>
         <li className="flex items-center space-x-3">
           <RiCompass3Line className="w-6 h-6 fill-current" />

@@ -2,20 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { FaThumbsUp, FaComment } from 'react-icons/fa';
 import { useLikeDislike } from '../hooks/likes';
 import { useUserInfo } from '../hooks/auth';
-import SkeletonSidebar from './SkeletonSidebar';
-import SkeletonPostCard from './SkeletonPostCard';
 
-const formatDate = (dateString) => {
-  const date = new Date(dateString);
-  const options = {
-    month: 'short',
-    day: 'numeric',
-    hour: 'numeric',
-    minute: 'numeric',
-    hour12: true,
-  };
-  return date.toLocaleString('en-US', options);
-};
+import SkeletonPostCard from './Skeletons/SkeletonPostCard';
+import { NavLink } from 'react-router-dom';
+import formatDate  from '../utils/Formatdate';
 
 const PostCard = ({ post }) => {
   const { LikePost } = useLikeDislike();
@@ -67,6 +57,7 @@ const PostCard = ({ post }) => {
 
   return (
     <div className="bg-black text-white p-4 shadow-md rounded-lg">
+    <NavLink to={`/profile/${post.author?.id}`}>
     <div className="flex items-center">
       <img
         className="h-10 w-10 rounded-full border border-6 "
@@ -75,6 +66,7 @@ const PostCard = ({ post }) => {
       />
       <p className="ml-4 text-white font-bold">{post.author.name}</p>
     </div>
+    </NavLink>
     <p className="text-white mt-2">{post.content}</p>
     <div className="flex items-center mt-4">
       <button

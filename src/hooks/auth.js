@@ -139,7 +139,7 @@ export function useUserInfo() {
 
 
     }
-    console.log("user", user)
+
 
     return { userInfo, user, isLoggedin }
 }

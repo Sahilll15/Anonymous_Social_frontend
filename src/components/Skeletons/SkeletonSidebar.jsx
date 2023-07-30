@@ -2,7 +2,7 @@ import React from 'react';
 
 const SkeletonSidebar = () => {
   return (
-    <div className="bg-gray-800 text-white fixed top-0 w-1/6 p-4 h-screen">
+    <div className="bg-black text-white fixed top-0 w-1/6 p-4 h-screen">
       <div className="animate-pulse">
         <div className="h-10 w-10 rounded-full bg-gray-500 mr-3 mb-4"></div>
         <div className='mb-4'>

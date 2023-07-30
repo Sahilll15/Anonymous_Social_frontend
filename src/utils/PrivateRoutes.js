@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Outlet, Navigate } from 'react-router-dom';
 import axios from 'axios';
 import { useUserInfo } from '../hooks/auth';
-import PageSkeleton from '../components/PageSekeleton';
+import PageSkeleton from '../components/Skeletons/PageSekeleton';
 
 
 const PrivateRoutes = () => {

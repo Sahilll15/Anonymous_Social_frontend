@@ -3,9 +3,11 @@ import Sidebar from '../components/Sidebar';
 import { useGetPosts } from '../hooks/posts';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faThumbsUp, faComment } from '@fortawesome/free-solid-svg-icons';
+import { faThumbsUp, faComment, faL } from '@fortawesome/free-solid-svg-icons';
 import PostCard from '../components/PostCard';
 import { useAddPost } from '../hooks/posts';
+
+import BackToTopButton from '../components/BackToTopButton';
 
 const host = `https://anonymous-social-bt77.onrender.com/api/v1/posts`
 
@@ -13,10 +15,17 @@ const Home = () => {
   const [posts, setPosts] = useState([]);
 
   const { addPost } = useAddPost();
+  const authToken = localStorage.getItem('auth');
 
   const fetchPosts = async () => {
     try {
-      const response = await fetch(`${host}/getposts`);
+      const response = await fetch(`${host}/getposts`,{
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${authToken}`,
+        }
+      });
       const responseData = await response.json();
       if (response.ok) {
         setPosts(responseData.posts);
@@ -90,9 +99,12 @@ const Home = () => {
           <PostCard post={post} handleLike={handleLike} handleComment={handleComment} />
         ))}
       </div>
+        
+        <BackToTopButton />
+   
     </div>
   </div>
-  <></>
+ 
 
     </>
   );
