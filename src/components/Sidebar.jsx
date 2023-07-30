@@ -1,27 +1,42 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { RiHome2Line, RiCompass3Line, RiBellLine, RiLogoutCircleLine } from 'react-icons/ri';
 import { NavLink } from 'react-router-dom';
 import { useUserInfo } from '../hooks/auth';
+import SkeletonSidebar from './SkeletonSidebar';
 
 const Sidebar = () => {
+  const [isLoading, setIsLoading] = useState(true);
+  const { userInfo, user } = useUserInfo();
+
+  useEffect(() => {
+    userInfo()
+      .then(() => {
+        setIsLoading(false);
+      })
+      .catch((error) => {
+        setIsLoading(false);
+      });
+  }, []);
 
   const handleLogout = () => {
     localStorage.removeItem('auth');
     window.location.href = '/login';
   };
 
-  const { userInfo, user } = useUserInfo();
-
-  useEffect(() => {
-    userInfo();
-  }, []);
+  if (isLoading) {
+    return <SkeletonSidebar />;
+  }
 
   if (!user) {
-    return <div>Loading...</div>;
+    return (
+      <div className="bg-gray-800 text-white fixed top-0 w-1/6 p-4 h-screen">
+        <p>Please log in to view the sidebar.</p>
+      </div>
+    );
   }
 
   return (
-    <div className="bg-gray-800 text-white fixed top-0 w-1/6 p-4 h-screen">
+    <div className="bg-black text-white fixed top-0 w-1/6 p-4 h-screen">
       <div className="flex items-center mb-8">
         <div className="h-10 w-10 rounded-full bg-white mr-3">
           <img
@@ -50,7 +65,7 @@ const Sidebar = () => {
         </li>
         <li className="flex items-center space-x-3" onClick={handleLogout}>
           <RiLogoutCircleLine className="w-6 h-6 fill-current" />
-          <NavLink>Logout</NavLink>
+          <NavLink to="/login">Logout</NavLink>
         </li>
       </ul>
     </div>

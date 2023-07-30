@@ -1,3 +1,4 @@
+import axios from "axios";
 import { useState } from "react";
 import { toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
@@ -77,17 +78,3 @@ export function useAddPost() {
 }
 
 
-export function useLikeDislike() {
-
-    const LikePost = (postId) => {
-
-        try {
-
-        } catch (error) {
-
-        }
-
-    }
-
-
-}

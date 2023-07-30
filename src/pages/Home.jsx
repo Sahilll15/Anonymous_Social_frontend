@@ -32,11 +32,16 @@ const Home = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     let content = e.target[0].value;
-    console.log(content)
-    addPost(content);
-    content=' ';
-    await fetchPosts();
+
+    try {
+      await addPost(content);
+      content = ''; 
+      await fetchPosts(); 
+    } catch (error) {
+      console.error(error);
+    }
   };
+  
 
   useEffect(() => {
     fetchPosts();
@@ -60,36 +65,34 @@ const Home = () => {
 
   return (
     <>
-      <div className="flex flex-col lg:flex-row">
-        <Sidebar />
+<div className="flex flex-col lg:flex-row">
+    <Sidebar />
 
-        <div className="container ml-44 lg:w-3/4 mx-auto px-10 py-8 lg:ml-80">
-
-          {/* Post Input Form */}
-          <div className="mb-4">
-            <form onSubmit={handleSubmit}>
-              <textarea
-                className="w-full border rounded px-3 py-4"
-                placeholder="Write your post here..."
-                name='content'
-              ></textarea>
-              <button
-                type="submit"
-                className="mt-2 bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded"
-              >
-                Post
-              </button>
-            </form>
-          </div>
-
-          <div className="space-y-4 ">
-            {posts.length === 0 ? <h1>Loading..</h1> : null}
-            {posts.map((post) => (
-              <PostCard post={post} handleLike={handleLike} handleComment={handleComment} />
-            ))}
-          </div>
-        </div>
+    <div className="container lg:w-3/4 mx-auto px-10 py-8 lg:ml-80">
+      <div className="mb-4">
+        <form onSubmit={handleSubmit}>
+          <textarea
+            className="w-full border border-black rounded px-4 py-3 focus:outline-none focus:border-black"
+            placeholder="Write your post here..."
+            name="content"
+          ></textarea>
+          <button
+            type="submit"
+            className="mt-4 bg-white border border-black hover:bg-black hover:text-white text-black font-bold py-2 px-4 rounded focus:outline-none"
+          >
+            Post
+          </button>
+        </form>
       </div>
+
+      <div className="space-y-4">
+        {posts.map((post) => (
+          <PostCard post={post} handleLike={handleLike} handleComment={handleComment} />
+        ))}
+      </div>
+    </div>
+  </div>
+
     </>
   );
 };

@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import { Outlet, Navigate } from 'react-router-dom';
 import axios from 'axios';
 import { useUserInfo } from '../hooks/auth';
+import PageSkeleton from '../components/PageSekeleton';
+
 
 const PrivateRoutes = () => {
     const { user, isLoggedin, userInfo } = useUserInfo();
@@ -18,7 +20,9 @@ const PrivateRoutes = () => {
 
     if (isLoading) {
 
-        return <div>Loading...</div>;
+        return <div>
+            <PageSkeleton />
+        </div>;
     }
 
     return (

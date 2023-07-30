@@ -24,10 +24,10 @@ export function useLikeDislike() {
             const responseData = await response.json();
             if (response.ok) {
                 console.log(responseData)
-                toast.success(responseData.msg);
+
             }
             else {
-                toast.error(responseData.message);
+
                 throw new Error(responseData.message);
             }
 
