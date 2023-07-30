@@ -4,6 +4,7 @@ import { toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 
 const host = `https://anonymous-social-bt77.onrender.com/api/v1/posts`
+const authToken = localStorage.getItem('auth');
 
 
 export function useGetPosts() {
@@ -45,14 +46,14 @@ export function useAddPost() {
         setisLoading(true);
         setError(null);
         try {
-            // Get the authentication token from wherever it's stored (e.g., localStorage, cookies)
             const authToken = localStorage.getItem('auth');
+
 
             const response = await fetch(`${host}/createpost`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${authToken}`, // Include the authorization token here
+                    'Authorization': `Bearer ${authToken}`,
                 },
                 body: JSON.stringify({
                     content
@@ -78,3 +79,91 @@ export function useAddPost() {
 }
 
 
+export function useDelete() {
+
+    const [isdeleteLoading, setdeleteisLoading] = useState(false);
+
+    const deletePost = async (postId) => {
+        setdeleteisLoading(true);
+        const authToken = localStorage.getItem('auth');
+
+        try {
+            const response = await fetch(`${host}/deletepost/${postId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${authToken}`,
+                }
+            });
+            const responseData = await response.json();
+            if (response.ok) {
+                toast.success('post deleted successfully');
+                setdeleteisLoading(false);
+            }
+            else {
+                toast.error(responseData.msg);
+                setdeleteisLoading(false);
+                throw new Error(responseData.message);
+
+            }
+            setdeleteisLoading(false);
+
+        } catch (error) {
+            console.log(error);
+            setdeleteisLoading(false);
+
+        }
+
+    }
+
+    return { isdeleteLoading, deletePost };
+}
+
+
+export function useUpdate() {
+
+    const [isupdateLoading, setIsUpdateLoading] = useState(false);
+    const [error, setError] = useState(null);
+    const [data, setData] = useState([]);
+
+    const updatePost = async (postId, content) => {
+        setIsUpdateLoading(true);
+
+        try {
+            const response = await fetch(`${host}/updatepost/${postId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${authToken}`
+                },
+                body: JSON.stringify({
+                    content
+
+                })
+            });
+
+            const responseData = await response.json();
+            if (response.ok) {
+                setData(responseData.post);
+                toast.success('post updated successfully');
+                setIsUpdateLoading(false);
+            }
+            else {
+                toast.error(responseData.msg);
+                setIsUpdateLoading(false);
+                throw new Error(responseData.message);
+
+            }
+            setIsUpdateLoading(false);
+
+
+
+        } catch (error) {
+            console.log(error);
+            setIsUpdateLoading(false);
+
+        }
+    }
+
+    return { isupdateLoading, error, data, updatePost };
+}

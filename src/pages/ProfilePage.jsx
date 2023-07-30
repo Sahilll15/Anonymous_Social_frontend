@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import PostCard from '../components/PostCard';
 import Sidebar from '../components/Sidebar';
-import { Navigate, useParams } from 'react-router-dom';
+import { NavLink, Navigate, useParams } from 'react-router-dom';
 import formatDate  from '../utils/Formatdate';
 import SkeletonProfilePage from '../components/Skeletons/SkeletonProfilePage';
 import { FaHome } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
+import { useUserInfo } from '../hooks/auth';
+import { useDelete,useUpdate } from '../hooks/posts';
+import { faL } from '@fortawesome/free-solid-svg-icons';
 
 
   
@@ -13,13 +16,20 @@ import { useNavigate } from 'react-router-dom';
 const ProfilePage = () => {
 
     const [posts, setPosts] = useState([]);
-    const [user, setUser] = useState([]);
+    const [profileUser, setProfileUser] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const { userID } = useParams();
     const [editMode, setEditMode] = useState(false);
-    const [username, setUsername] = useState(user.username);
+    const [editPostMode,setEditPostMode]=useState(false);
+    const [username, setUsername] = useState(profileUser?.username);
     const navigate=useNavigate();
     const [description, setDescription] = useState('This is user description of the profile page of an user');
+    const [editContent, setEditContent] = useState('');
+    const [editingPostId, setEditingPostId] = useState(null);
+    const { userInfo, user, isLoggedIn } = useUserInfo();
+    const { deletePost,isdeleteLoading } = useDelete();
+    const { updatePost, isUpdateLoading } = useUpdate();
+    
   
     const handleEditClick = () => {
       setEditMode(true);
@@ -38,7 +48,7 @@ const ProfilePage = () => {
           });
           const data = await response.json();
           if (response.ok) {
-            setUser(data.user);
+            setProfileUser(data.user);
             console.log(data.user);
             setIsLoading(false);
           } else {
@@ -71,6 +81,7 @@ const ProfilePage = () => {
                 setIsLoading(false);
             } else {
                 setIsLoading(false);
+                setProfileUser(null);
                 throw new Error(responseData.message);
             }
         } catch (err) {
@@ -79,25 +90,77 @@ const ProfilePage = () => {
         }
     }
 
+    // delete post function
+    const handleDelete=async(postId)=>{
+      console.log(postId);
+     await deletePost(postId);
+     await fetchPosts();
+    }
+
+    //update post fiunction
+    const handleEdit = (postId) => {
+      const postToEdit = posts.find((post) => post._id === postId);
+      if (postToEdit) {
+        setEditingPostId(postId);
+        setEditContent(postToEdit.content);
+        setEditPostMode(true);
+      }
+    };
+  
+    const handleCancelEdit = () => {
+      setEditPostMode(false);
+      setEditingPostId(null);
+      setEditContent('');
+    };
+  
+    const handleSaveEdit = async (postId) => {
+      console.log('Saving edited content for post with ID:', postId, 'New content:', editContent);
+      await updatePost(postId, editContent);
+      await fetchPosts();
+      setEditPostMode(false);
+      setEditingPostId(null);
+      setEditContent('');
+    };
+  
+
     useEffect(()=>{
         getUser();
         fetchPosts();
+        userInfo();
+        console.log('profileUser'+ profileUser)
         
     },[])
 
-    if(isLoading){
+    const loggedInUserId=user? user._id : null;
+
+
+
+    if(isLoading  ){
         return(
             <SkeletonProfilePage />
         )
       
     }
 
+    if (!profileUser) {
+      return (
+        <div className="flex flex-col items-center justify-center h-screen bg-gray-800 text-white">
+          <h1 className="text-4xl font-bold mb-4">The user does not exist</h1>
+          <NavLink to="/">
+            <button className="bg-black text-white px-4 py-2 rounded-lg hover:bg-white hover:text-black focus:outline-none">
+              Go Home
+            </button>
+          </NavLink>
+        </div>
+      );
+    }
+
+
   return (
-    <div className="container mx-auto mt-8 flex justify-center">
+    <div className="container  mt-8 flex justify-center mx-auto p-10">
 
-    {/* button to go back on the home page */}
 
-    <div className="flex flex-col bg-black text-white w-96 p-4 rounded-lg ">
+    <div className="flex flex-col bg-black text-white w-96 p-4 rounded-lg  ">
         <div className="flex justify-between items-center">
 
         <button
@@ -130,8 +193,8 @@ const ProfilePage = () => {
 
         <img
           className="h-26 w-26 rounded-full border border-gray-300 mt-10"
-          src={user.avatar?.url}
-          alt={user.username}
+          src={profileUser?.avatar?.url}
+          alt={profileUser?.username}
         />
 
         <hr className="mt-10" />
@@ -144,12 +207,12 @@ const ProfilePage = () => {
                 onChange={(e) => setUsername(e.target.value)}
                 className="font-bold text-xl focus:outline-none text-black p-2 rounded-lg"
               />
-              <p className="text-gray-600">@{user.username}</p>
+              <p className="text-gray-600">@{profileUser?.username}</p>
             </>
           ) : (
             <>
-              <h2 className="font-bold text-4xl">{user.username}</h2>
-              <p className="text-gray-600">@{user.username}</p>
+              <h2 className="font-bold text-4xl">{profileUser?.username}</h2>
+              <p className="text-gray-600">@{profileUser?.username}</p>
             </>
           )}
 
@@ -164,36 +227,81 @@ const ProfilePage = () => {
             <p className="text-xl font-sans mt-4">{description}</p>
           )}
 
-          <div className="mt-4">
-            <p className="text-gray-400">Followers: 100</p>
-            <p className="text-gray-400">Following: 101</p>
+          <div className="mt-4 flex gap-4">
+            <p className="text-gray-400 font-bold ">Followers: {profileUser?.followers?.length || 0} </p>
+            <p className="text-gray-400 font-bold">Following: {profileUser?.following?.length || 0}</p>
           </div>
         </div>
       </div>
 
 
 
-    <div className="ml-8 flex-grow bg-gray-500 p-10">
-      <h3 className="font-bold text-xl text-black mb-4">Posts</h3>
-      <ul className="space-y-10">
-        {posts.map((post) => (
-              <div className="bg-black text-white p-4 shadow-md rounded-lg">
+      <div className="ml-8 flex-grow bg-gray-500 p-10">
+        <h3 className="font-bold text-xl text-black mb-4">Posts</h3>
+        <ul className="space-y-10">
+          {posts.length === 0 ? (
+            <p className="text-white font-bold text-4xl items-center flex justify-center">No posts yet</p>
+          ) : null}
+          {posts.map((post) => (
+            <div key={post._id} className="bg-black text-white p-4 shadow-md rounded-lg">
               <div className="flex items-center">
                 <img
                   className="h-10 w-10 rounded-full border border-6 "
-                  src={user.avatar?.url}
-                  alt={user.username}
+                  src={profileUser.avatar?.url}
+                  alt={profileUser?.username}
                 />
-              
               </div>
-              <p className="text-white mt-2">{post.content}</p>
-            
+              {editingPostId === post._id ? (
+                <textarea
+                  value={editContent}
+                  onChange={(e) => setEditContent(e.target.value)}
+                  className="text-sm font-sans mt-4 text-black w-full p-2 rounded-lg"
+                />
+              ) : (
+                <p className="text-white mt-2">{post.content}</p>
+              )}
               <div className="text-blue-600 text-sm mt-2">{formatDate(post.createdAt)}</div>
+              {post.author?.id === loggedInUserId && (
+                <div className="mt-2">
+                  {editingPostId === post._id ? (
+                    <>
+                      <button
+                        className="bg-green-700 hover:bg-green-900 text-white font-bold py-1 px-4 rounded mr-2"
+                        onClick={() => handleSaveEdit(post._id)}
+                      >
+                       {isUpdateLoading ? 'Updating...' : 'Save Edit'}
+                      </button>
+                      <button
+                        className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-4 rounded"
+                        onClick={handleCancelEdit}
+                      >
+                        Cancel Edit
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <button
+                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-4 rounded mr-2"
+                        onClick={() => handleEdit(post._id)}
+                      >
+                        {isUpdateLoading ? 'Updating...' : 'Edit'}
+                      </button>
+                      <button
+                        className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-4 rounded"
+                        onClick={() => handleDelete(post._id)}
+                      >
+                        {isdeleteLoading ? 'Deleting...' : 'Delete'}
+                      </button>
+                    </>
+                  )}
+                </div>
+              )}
             </div>
-        ))}
-      </ul>
+          ))}
+        </ul>
+      </div>
     </div>
-  </div>
+
   );
 };
 

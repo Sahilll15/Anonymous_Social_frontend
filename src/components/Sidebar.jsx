@@ -60,11 +60,7 @@ const Sidebar = () => {
         </li>
         <li className="flex items-center space-x-3">
           <RiCompass3Line className="w-6 h-6 fill-current" />
-          <a href="/">Explore</a>
-        </li>
-        <li className="flex items-center space-x-3">
-          <RiBellLine className="w-6 h-6 fill-current" />
-          <a href="/">Notifications</a>
+          <NavLink to="/">Home</NavLink>
         </li>
         <li className="flex items-center space-x-3" onClick={handleLogout}>
           <RiLogoutCircleLine className="w-6 h-6 fill-current" />
