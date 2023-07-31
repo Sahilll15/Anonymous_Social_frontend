@@ -8,13 +8,13 @@ import { FaHome } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import { useUserInfo ,useUpdateProfile} from '../hooks/auth';
 import { useDelete,useUpdate } from '../hooks/posts';
-import { faL } from '@fortawesome/free-solid-svg-icons';
 import { useFollowUnfollow } from '../hooks/followUnfollow';
-
+import ProfilePostsComponent from '../components/ProfilePageComponets/ProfilePosts';
+import ProfileCard from '../components/ProfilePageComponets/ProfileCard';
 
   
 
-const ProfilePage = () => {
+const ProfilePageChange = () => {
 
     const [posts, setPosts] = useState([]);
     const [profileUser, setProfileUser] = useState([]);
@@ -22,9 +22,9 @@ const ProfilePage = () => {
     const { userID } = useParams();
     const [editMode, setEditMode] = useState(false);
     const [editPostMode,setEditPostMode]=useState(false);
-    const [username, setUsername] = useState('');
+    const [username, setUsername] = useState(profileUser?.username);
     const navigate=useNavigate();
-    const [description, setDescription] = useState('');
+    const [description, setDescription] = useState(profileUser?.bio );
     const [editContent, setEditContent] = useState('');
     const [editingPostId, setEditingPostId] = useState(null);
     const { userInfo, user, isLoggedIn } = useUserInfo();
@@ -152,8 +152,6 @@ const ProfilePage = () => {
         userInfo();
         console.log('profileUser'+ profileUser)
         console.log(profileUser.isFollowing)
-        setUsername(profileUser?.username || '');
-        setDescription(profileUser?.bio || '');
         
     },[])
 
@@ -185,111 +183,32 @@ const ProfilePage = () => {
   return (
     <div className="container  mt-8 flex justify-center mx-auto p-10">
 
-
+{/* profile component */}
     <div className="flex flex-col bg-black text-white w-96 p-4 rounded-lg  ">
-        <div className="flex justify-between items-center">
+       <ProfileCard 
+         profileUser={profileUser}
+            editMode={editMode}
+            handleEditClick={handleEditClick}
+            username={username}
+            setUsername={setUsername}
+            description={description}
+            setDescription={setDescription}
+            handleUpdateProfile={handleUpdateProfile}
+            loggedInUserId={loggedInUserId}
+            isfollowLoading={isfollowLoading}
+            handlefollowunfollow={handlefollowunfollow}
+            isDropdownOpen={isDropdownOpen}
+            toggleDropdown={toggleDropdown}
+            isFollowing={profileUser.isFollowing}
+            isFollowLoading={isfollowLoading}
+          />
 
-        <button
-              className="bg-white hover:bg-gray-500  text-black font-bold py-2 px-4 rounded text-2xl"
-                onClick={() =>navigate('/') }
-            >
-                <FaHome />
-            </button>
-      
-          <h1 className="font-bold text-2xl">Profile</h1>
-          {
-            profileUser._id ===loggedInUserId? 
-            (
-              <>
-               {editMode ? (
-            <button
-              className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
-              onClick={handleUpdateProfile}
-            >
-              Save Profile
-            </button>
-          ) : (
-            <button
-              className="bg-white hover:bg-blue-700 text-black font-bold py-2 px-4 rounded"
-              onClick={handleEditClick}
-            >
-              Edit Profile
-            </button>
-          ) 
-          }
-              </>
-            ):null
-          }
-         
-        </div>
-        <hr className="mt-4" />
 
-        <img
-          className="h-26 w-26 rounded-full border border-gray-300 mt-10"
-          src={profileUser?.avatar?.url}
-          alt={profileUser?.username}
-        />
-
-        <hr className="mt-10" />
-        <div className="ml-4 mt-2">
-          {editMode ? (
-            <>
-              <input
-                type="text"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                className="font-bold text-xl focus:outline-none text-black p-2 rounded-lg"
-              />
-              <p className="text-gray-600">@{profileUser?.username}</p>
-            </>
-          ) : (
-            <>
-              <h2 className="font-bold text-4xl">{profileUser?.username}</h2>
-              <p className="text-gray-600">@{profileUser?.username}</p>
-            </>
-          )}
-
-         
-          {editMode ? (
-            <textarea
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              className="text-xl font-sans mt-4 text-black resize-none p-2 rounded-lg"
-            />
-          ) : (
-            <p className="text-xl font-sans mt-4">{profileUser?.bio }</p>
-          )}
-
-          <div className="mt-4 flex gap-4">
-            <p className="text-gray-400 font-bold ">Followers: {profileUser?.followers?.length || 0} </p>
-            <p className="text-gray-400 font-bold">Following: {profileUser?.following?.length || 0}</p>
-          </div>
-
-          <div className='mt-2'>
-            {
-              profileUser._id ===loggedInUserId? null : (
-
-            
-          <button
-      className={`text-sm px-3 py-1 rounded-full ${
-     profileUser?.followers?.includes(loggedInUserId)
-      ? 'bg-red-500 text-white hover:bg-red-700' 
-      : 'bg-blue-500 border border-blue-500 text-white  hover:bg-blue-700'
-  }`}
-  
-  onClick={() => handlefollowunfollow(profileUser._id)}
->
-  {profileUser?.followers?.includes(loggedInUserId) ? 'Unfollow' : 'Follow'}
-</button>
-              )
-            }
-      </div>
-        </div>
+    
       </div>
 
 
-      {/* this is where the posts page start */}
-
+{/* posts page */}
       <div className="ml-8 flex-grow bg-gray-500 p-10">
         <h3 className="font-bold text-xl text-black mb-4">Posts</h3>
         <ul className="space-y-10">
@@ -299,66 +218,26 @@ const ProfilePage = () => {
             <p className="text-white font-bold text-4xl items-center flex justify-center">No posts yet</p>
           ) : null}
           {posts.map((post) => (
-            <div key={post._id} className="bg-black text-white p-4 shadow-md rounded-lg">
-              <div className="flex items-center">
-                <img
-                  className="h-10 w-10 rounded-full border border-6 "
-                  src={profileUser.avatar?.url}
-                  alt={profileUser?.username}
-                />
-              </div>
-
-              
-              {editingPostId === post._id ? (
-                <textarea
-                  value={editContent}
-                  onChange={(e) => setEditContent(e.target.value)}
-                  className="text-sm font-sans mt-4 text-black w-full p-2 rounded-lg"
-                />
-              ) : (
-                <p className="text-white mt-2">{post.content}</p>
-              )}
-              <div className="text-blue-600 text-sm mt-2">{formatDate(post.createdAt)}</div>
-              {post.author?.id === loggedInUserId && (
-                <div className="mt-2">
+            <ProfilePostsComponent
+            key={post._id}
+            post={post}
+            profileUser={profileUser}
+            loggedInUserId={loggedInUserId}
+            handleDelete={handleDelete}
+            handleEdit={handleEdit}
+            handleCancelEdit={handleCancelEdit}
+            handleSaveEdit={handleSaveEdit}
+            editPostMode={editPostMode}
+            editingPostId={editingPostId}
+            editContent={editContent}
+            isUpdateLoading={isUpdateLoading}
+            isdeleteLoading={isdeleteLoading}
+            setEditContent={setEditContent}
 
 
+            />
 
-                  {editingPostId === post._id ? (
-                    <>
-                      <button
-                        className="bg-green-700 hover:bg-green-900 text-white font-bold py-1 px-4 rounded mr-2"
-                        onClick={() => handleSaveEdit(post._id)}
-                      >
-                       {isUpdateLoading ? 'Updating...' : 'Save Edit'}
-                      </button>
-                      <button
-                        className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-4 rounded"
-                        onClick={handleCancelEdit}
-                      >
-                        Cancel Edit
-                      </button>
-                    </>
-                  ) : (
-                    <>
-                      <button
-                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-4 rounded mr-2"
-                        onClick={() => handleEdit(post._id)}
-                      >
-                        {isUpdateLoading ? 'Updating...' : 'Edit'}
-                      </button>
-                      <button
-                        className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-4 rounded"
-                        onClick={() => handleDelete(post._id)}
-                      >
-                        {isdeleteLoading ? 'Deleting...' : 'Delete'}
-                      </button>
-                      
-                    </>
-                  )}
-                </div>
-              )}
-            </div>
+            
           ))}
         </ul>
       </div>
@@ -367,4 +246,4 @@ const ProfilePage = () => {
   );
 };
 
-export default ProfilePage;
+export default ProfilePageChange;

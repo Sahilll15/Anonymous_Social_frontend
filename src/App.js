@@ -10,6 +10,7 @@ import Signup from "./pages/Signup";
 import ProfilePage from "./pages/ProfilePage";
 import PageNotFound from "./pages/PageNotFound";
 import CommentsPage from "./pages/CommentPage";
+import ProfilePageChange from "./pages/ProfilePageChange";
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
             <Route element={<Home />} path="/" />
             <Route element={<ProfilePage />} path="/profile/:userID" />
             <Route element={<CommentsPage />} path="/comments/:postID" />
+
           </Route>
           <Route element={<Login />} path="/login" />
           <Route element={<Signup />} path="/signup" />

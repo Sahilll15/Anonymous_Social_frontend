@@ -143,3 +143,49 @@ export function useUserInfo() {
 
     return { userInfo, user, isLoggedin }
 }
+
+
+export function useUpdateProfile() {
+    const [isUpdatingProfile, setIsUpdatingProfile] = useState(false);
+    const [error, setError] = useState(null);
+    const [isUpdated, setIsUpdated] = useState(false);
+
+    const updateProfile = async (bio, username) => {
+        setIsUpdatingProfile(true);
+        setError(null);
+        const authToken = localStorage.getItem('auth');
+        try {
+            const response = await fetch('https://anonymous-social-bt77.onrender.com/api/v1/auth/editprofile', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${authToken}`,
+                },
+                body: JSON.stringify({
+                    bio,
+                    username
+                })
+            })
+            const responseData = await response.json();
+            if (response.ok) {
+                toast.success('profile updated succesfully')
+                setIsUpdated(true);
+            }
+            else {
+                toast.error(responseData.error);
+                throw new Error(responseData.error);
+            }
+            setIsUpdatingProfile(false);
+
+        } catch (error) {
+            toast.error('error updating profile!!');
+            setError(error.message);
+            setIsUpdatingProfile(false);
+
+        }
+
+    }
+
+    return { isUpdatingProfile, error, isUpdated, updateProfile }
+}
+
