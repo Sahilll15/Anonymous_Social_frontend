@@ -23,7 +23,7 @@ const ProfilePage = () => {
     const [editPostMode,setEditPostMode]=useState(false);
     const [username, setUsername] = useState(profileUser?.username);
     const navigate=useNavigate();
-    const [description, setDescription] = useState('This is user description of the profile page of an user');
+    const [description, setDescription] = useState(profileUser.bio );
     const [editContent, setEditContent] = useState('');
     const [editingPostId, setEditingPostId] = useState(null);
     const { userInfo, user, isLoggedIn } = useUserInfo();
@@ -241,7 +241,7 @@ const ProfilePage = () => {
               className="text-xl font-sans mt-4 text-black resize-none p-2 rounded-lg"
             />
           ) : (
-            <p className="text-xl font-sans mt-4">{description}</p>
+            <p className="text-xl font-sans mt-4">{profileUser?.bio }</p>
           )}
 
           <div className="mt-4 flex gap-4">
