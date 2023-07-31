@@ -86,20 +86,7 @@ const PostCard = ({ post }) => {
                </NavLink>  
                
 
-      <div className='mt-2'>
-      {!isPostByCurrentUser && (
-            <button
-              onClick={() => handleFollowClick(post.author?.id)}
-              className={`text-sm px-3 py-1 rounded-full ${
-                isFollowing
-                  ? 'bg-transparent border border-blue-500 text-blue-500'
-                  : 'bg-blue-500 text-white'
-              }`}
-            >
-              {isFollowing ? 'Unfollow' : 'Follow'}
-            </button>
-          )}
-      </div>
+      
         
 
 </div>

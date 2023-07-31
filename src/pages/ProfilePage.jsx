@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import { useUserInfo } from '../hooks/auth';
 import { useDelete,useUpdate } from '../hooks/posts';
 import { faL } from '@fortawesome/free-solid-svg-icons';
-
+import { useFollowUnfollow } from '../hooks/followUnfollow';
 
   
 
@@ -29,6 +29,7 @@ const ProfilePage = () => {
     const { userInfo, user, isLoggedIn } = useUserInfo();
     const { deletePost,isdeleteLoading } = useDelete();
     const { updatePost, isUpdateLoading } = useUpdate();
+    const {isfollowLoading, error, followUnfollow}=useFollowUnfollow();
     
   
     const handleEditClick = () => {
@@ -49,7 +50,8 @@ const ProfilePage = () => {
           const data = await response.json();
           if (response.ok) {
             setProfileUser(data.user);
-            console.log(data.user);
+            console.log(data.user)
+            console.log(data.user._id);
             setIsLoading(false);
           } else {
             setIsLoading(false);
@@ -90,6 +92,13 @@ const ProfilePage = () => {
         }
     }
 
+    //handle followubnfollow
+    const handlefollowunfollow= async(userID)=>{
+     await followUnfollow(userID);
+     await getUser();
+
+    }
+
     // delete post function
     const handleDelete=async(postId)=>{
       console.log(postId);
@@ -128,6 +137,7 @@ const ProfilePage = () => {
         fetchPosts();
         userInfo();
         console.log('profileUser'+ profileUser)
+        console.log(profileUser.isFollowing)
         
     },[])
 
@@ -171,7 +181,11 @@ const ProfilePage = () => {
             </button>
       
           <h1 className="font-bold text-2xl">Profile</h1>
-          {editMode ? (
+          {
+            profileUser._id ===loggedInUserId? 
+            (
+              <>
+               {editMode ? (
             <button
               className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
               onClick={() => setEditMode(false)}
@@ -185,9 +199,12 @@ const ProfilePage = () => {
             >
               Edit Profile
             </button>
-          )}
-
-
+          ) 
+          }
+              </>
+            ):null
+          }
+         
         </div>
         <hr className="mt-4" />
 
@@ -231,10 +248,28 @@ const ProfilePage = () => {
             <p className="text-gray-400 font-bold ">Followers: {profileUser?.followers?.length || 0} </p>
             <p className="text-gray-400 font-bold">Following: {profileUser?.following?.length || 0}</p>
           </div>
+
+          <div className='mt-2'>
+            {
+              profileUser._id ===loggedInUserId? null : (
+
+            
+          <button
+      className={`text-sm px-3 py-1 rounded-full ${
+     profileUser?.followers?.includes(loggedInUserId)
+      ? 'bg-red-500 text-white hover:bg-red-700' 
+      : 'bg-blue-500 border border-blue-500 text-white  hover:bg-blue-700'
+  }`}
+  
+  onClick={() => handlefollowunfollow(profileUser._id)}
+>
+  {profileUser?.followers?.includes(loggedInUserId) ? 'Unfollow' : 'Follow'}
+</button>
+              )
+            }
+      </div>
         </div>
       </div>
-
-
 
       <div className="ml-8 flex-grow bg-gray-500 p-10">
         <h3 className="font-bold text-xl text-black mb-4">Posts</h3>
