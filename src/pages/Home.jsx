@@ -44,8 +44,8 @@ const Home = () => {
 
     try {
       await addPost(content);
-      content = ''; 
       await fetchPosts(); 
+      content = ''
     } catch (error) {
       console.error(error);
     }

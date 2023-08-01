@@ -3,6 +3,7 @@ import { useState } from "react";
 import { toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 
+
 const host = `https://anonymous-social-bt77.onrender.com/api/v1/posts`
 const authToken = localStorage.getItem('auth');
 
@@ -166,4 +167,37 @@ export function useUpdate() {
     }
 
     return { isupdateLoading, error, data, updatePost };
+}
+
+
+
+export function useSavePost() {
+
+
+    const savePost = async (postID) => {
+        try {
+
+            const response = await fetch(`${host}/savedPost/${postID}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${authToken}`,
+                },
+            })
+
+            const data = await response.json();
+            if (response.ok) {
+                toast.success(data.mssg)
+            } else {
+                toast.error(data.mssg)
+            }
+        } catch (error) {
+            toast.error('Error in saving the posts')
+            console.log(error)
+
+        }
+
+    }
+    return { savePost };
+
 }
