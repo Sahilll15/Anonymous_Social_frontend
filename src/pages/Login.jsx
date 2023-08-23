@@ -2,46 +2,39 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import { useLogin } from "../hooks/auth";
-import {toast,ToastContainer} from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.css'
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
 
-
 const Login = () => {
-    
   const [formdata, setFormData] = useState({ username: "", password: "" });
-    const [seepasword, setseepassword] = useState(false);
-    const { login } = useLogin();
-    const navigate = useNavigate();
-   
-    const handleviewpassword = () => {
-        setseepassword(!seepasword);
-        if (seepasword) {
-            document.getElementById('password').type = 'password';
-        } else {
-            document.getElementById('password').type = 'text';
-        }
-    };
+  const [seepasword, setseepassword] = useState(false);
+  const { login } = useLogin();
+  const navigate = useNavigate();
 
-  const onChange=(e)=>{
-    setFormData({...formdata,[e.target.name]:e.target.value})
+  const handleviewpassword = () => {
+    setseepassword(!seepasword);
+    if (seepasword) {
+      document.getElementById("password").type = "password";
+    } else {
+      document.getElementById("password").type = "text";
+    }
+  };
 
-  }
+  const onChange = (e) => {
+    setFormData({ ...formdata, [e.target.name]: e.target.value });
+  };
 
-  const handleSubmit=(e)=>{
+  const handleSubmit = (e) => {
     e.preventDefault();
-    login(formdata.username,formdata.password).then(()=>{
-      
-        navigate('/')
-
+    login(formdata.username, formdata.password).then(() => {
+      window.location.href = "/";
     });
-    
-  }
-
+  };
 
   return (
     <div>
-        <ToastContainer/>
+      <ToastContainer />
       <div className="min-h-screen flex items-center justify-center bg-black">
         <div className="max-w-md w-full p-6 bg-gray-300 rounded-lg shadow-md">
           <h2 className="text-2xl font-semibold mb-6">
@@ -83,23 +76,26 @@ const Login = () => {
               />
             </div>
             <div className="flex items-center justify-between mb-4">
-                  <div className="flex items-start">
-                    <div className="flex items-center h-5">
-                      <input
-                        id="viewpassword"
-                        aria-describedby="viewpassword"
-                        onClick={handleviewpassword}
-                        type="checkbox"
-                        className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-primary-600 dark:ring-offset-gray-800"
-                      />
-                    </div>
-                    <div className="ml-3 text-sm">
-                      <label htmlhtmlFor="viewpassword" className="text-gray-900 dark:text-gray-900">
-                        View password
-                      </label>
-                    </div>
-                  </div>
+              <div className="flex items-start">
+                <div className="flex items-center h-5">
+                  <input
+                    id="viewpassword"
+                    aria-describedby="viewpassword"
+                    onClick={handleviewpassword}
+                    type="checkbox"
+                    className="w-4 h-4 border border-gray-300 rounded bg-gray-50 focus:ring-3 focus:ring-primary-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-primary-600 dark:ring-offset-gray-800"
+                  />
                 </div>
+                <div className="ml-3 text-sm">
+                  <label
+                    htmlhtmlFor="viewpassword"
+                    className="text-gray-900 dark:text-gray-900"
+                  >
+                    View password
+                  </label>
+                </div>
+              </div>
+            </div>
             <div className="flex items-center justify-between">
               <button
                 type="submit"
@@ -107,10 +103,7 @@ const Login = () => {
               >
                 Login
               </button>
-            
             </div>
-
-          
           </form>
           <div className="mt-4 text-center">
             <span className="text-gray-600">Don't have an account? </span>
