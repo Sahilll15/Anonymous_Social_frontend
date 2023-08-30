@@ -1,0 +1,30 @@
+.sidebar {
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+  }
+  
+  .sidebar.active {
+    transform: translateX(0);
+  }
+  
+  #sidebar-toggle-button {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    color: white;
+  }
+
+  .closeS{
+    position: fixed;
+    margin-left: 0px;
+    height: 55px;
+    z-index: 10;
+
+  }
+
+  @media (max-width: 768px) {
+    .sidebar{
+        width: 300px;
+    }
+  }
+  

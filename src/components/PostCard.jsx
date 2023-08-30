@@ -65,7 +65,7 @@ const PostCard = ({ post }) => {
   }
 
   return (
-    <div className="bg-black text-white p-4 shadow-md rounded-lg">
+    <div className=" text-white p-4 shadow-md rounded-lg" style={{backgroundColor: '#201c1c'}}>
       <div className="flex gap-4">
         <NavLink to={`/profile/${post.author?.id}`}>
           <div className="flex items-center gap-2">
