@@ -74,14 +74,14 @@ const Home = () => {
 
   return (
     <>
-<div className="flex flex-col lg:flex-row">
+<div className="flex flex-col lg:flex-row" style={{backgroundColor: '#030303'}}>
     <Sidebar />
 
     <div className="container lg:w-3/4 mx-auto px-10 py-8 lg:ml-80">
       <div className="mb-4">
         <form onSubmit={handleSubmit}>
           <textarea
-            className="w-full border border-black rounded px-4 py-3 focus:outline-none focus:border-black"
+            className="w-full border border-white rounded px-4 py-3 focus:outline-none bg-slate-700 focus:border-black"
             placeholder="Write your post here..."
             name="content"
           ></textarea>
