@@ -49,18 +49,19 @@ const Sidebar = () => {
 
   return (
     <div>
+      <br/>
        <div className={`sidebar-toggle ${sidebarActive ? 'active' : ''}`}>
       <button id="sidebar-toggle-button" onClick={handleToggleSidebar}>
-        Toggle Sidebar
+       &nbsp; &nbsp; &nbsp; &nbsp; <i class="fa-solid fa-bars fa-xl"/> 
       </button>
     </div>
 
     <div className={`sidebar closeS text-white fixed top-0 w-1/6 p-4 h-screen border-slate-300 border-2 rounded-lg ${sidebarActive ? 'active' : ''}`} style={{backgroundColor: '#030303'}}>
       <button className="close-sidebar-button" onClick={handleToggleSidebar}>
-        Close Sidebar
+      <i class="fa-solid fa-xmark"/>
       </button>
       {/* Rest of your sidebar content */}
-      </div>
+    </div>
 
 
       <div
